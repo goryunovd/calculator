@@ -167,10 +167,15 @@ int calculation(Stack<string> rev_pref, double result)
 {
 	
 	Stack<string> calc;
-	string tmp1, tmp2;
+	string tmp1, tmp_calc1, tmp_calc2;
+	while (!rev_pref.empty())
+	{
+		tmp1 = rev_pref.top();
+		if (tmp1 == "*" && tmp1 == "+" && tmp1 == "-" && tmp1 == "/" && tmp1 == "^")
+		{
 
-
-
+		}
+	}
 	return result;
 };
 /*
@@ -184,7 +189,7 @@ int main()
 	Stack<string> prefix_stack;
 	Stack<string> from_str;
 	Stack<string> reverse_prefix;
-	string str = "((2.2+1.1*4.4*1.0)*5.5)/6.6+(-5)+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)+";
+	string str = "((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)";
 	bool check_for_bracekts = 0;
 	double result;
 	cout << "our txt is :" << str << endl;
@@ -202,7 +207,20 @@ int main()
 	prefix_notation_isnt_my_oreintation(&prefix_stack, &from_str);
 	cout << "\nprefix form:\n";
 	while (!prefix_stack.empty()) { cout << prefix_stack.top(); reverse_prefix.push(prefix_stack.top()); prefix_stack.pop(); }
-	//+/*+2.2*1.1*4.41.05.56.6+^+*cos(0.123891298)2.0sin(0.0)2.0+sgn(-5.0)+log(exp)log(1.0)
+	cout << endl;
+	while (!reverse_prefix.empty()) { cout << reverse_prefix.top(); reverse_prefix.pop(); }//+/*+2.2*1.1*4.41.05.56.6+^+*cos(0.123891298)2.0sin(0.0)2.0+sgn(-5.0)+log(exp)log(1.0)
 	//by internet(online calculator)
 	//+/*+2.2*1.1*4.41.05.56.6+^+*cos0.1238912982.0sin0.02.0+sgn-5.0+logexplog1.0
 }
+/*
+input
+((2.2+1.1*4.4*1.0)*5.5)/6.6+777+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)
+output
+ +/*+2.2*1.1*4.41.05.56.6+777+^+*cos(0.123891)2.0sin(0.0)2.0+sgn(-5.0)+log(exp)log(1.0)
+ 
+ 
+ input
+((2.2+1.1*4.4*1.0)*5.5)/6.6+(-777)+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)
+output
+ +/*+2.2*1.1*4.41.05.56.6+-777+^+*cos(0.123891)2.0sin(0.0)2.0+sgn(-5.0)+log(exp)log(1.0)
+ */
