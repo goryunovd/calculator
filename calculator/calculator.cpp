@@ -114,28 +114,40 @@ int priority(string c)
 	else							{		return 0;	}
 }
 void prefix_notation_isnt_my_oreintation(Stack<string> *prefix, Stack<string> str)
-{
+ {
 	/*
-	stack string| stack operators |stack prefix
+	stack string				| stack operators				|stack prefix
 	*/
 	Stack<string> operators;
 	string tmp;
 	while (!str.empty())
 	{
 		tmp = str.top();
-		
-			if (tmp == "(") { operators.push(tmp); str.pop(); }
-			if (tmp == ")") { while (tmp != "(") { tmp = operators.top(); if (tmp != "(") { prefix->push(tmp); }operators.pop(); } }
-//			if (tmp == "*" || tmp == "+" || tmp == "-" || tmp == "/" || tmp == "^")
-			if (tmp == "*") { if (priority(tmp) <= priority(operators.top()))  {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop();} }
-			if (tmp == "+") { if (priority(tmp) <= priority(operators.top())) {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop(); } }
-			if (tmp == "-") { if (priority(tmp) <= priority(operators.top())) {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop(); } }
-			if (tmp == "/") { if (priority(tmp) <= priority(operators.top())) {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop(); } }
-			if (tmp == "^") { if (priority(tmp) <= priority(operators.top())) {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop(); } }
-			if (tmp != "*" && tmp != "+" && tmp != "-" && tmp != "/" && tmp != "^" && tmp != "(" && tmp != ")")
-			{prefix->push(tmp); str.pop();}
-	}
-};
+		//((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(0.123891298)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)
+		if (tmp == "(") { operators.push(tmp); str.pop(); }
+		else
+			if (tmp == ")") { while (tmp != "(") { tmp = operators.top(); if (tmp != "(") { prefix->push(tmp); }operators.pop(); } str.pop(); }
+//		if (tmp == "*" || tmp == "+" || tmp == "-" || tmp == "/" || tmp == "^")
+		else
+				if (tmp == "*") {
+					while (priority(tmp) <= priority(operators.top())) {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop(); }operators.push(str.top()); str.pop();
+		}
+		else
+					if (tmp == "+") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str.top()); str.pop();
+		}
+		else
+						if (tmp == "-") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); }operators.push(str.top()); str.pop();
+		}
+		else
+							if (tmp == "/") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str.top()); str.pop();
+		}
+		else
+								if (tmp == "^") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str.top()); str.pop();
+		}
+		else
+									if (tmp != "*" && tmp != "+" && tmp != "-" && tmp != "/" && tmp != "^" && tmp != "(" && tmp != ")")
+		{prefix->push(tmp); str.pop();}
+	}};
 /*
 1) Create empty stack for saving operators
 2)check calculation from right to left
@@ -165,7 +177,12 @@ int main()
 
 	//prefix_isnt_my_oreintation()
 	transform_inf_to_stack(&from_str, str);
-	while (!from_str.empty()) { cout << from_str.top(); from_str.pop(); }
+	//while (!from_str.empty()) { cout << from_str.top(); from_str.pop(); }
 	prefix_notation_isnt_my_oreintation(&prefix_stack, from_str);
+	cout << "\nprefix form:\n";
 	while (!prefix_stack.empty()) { cout << prefix_stack.top(); prefix_stack.pop(); }
+	//+/*+2.2*1.1*4.41.05.56.6+^+*cos(0.123891298)2.0sin(0.0)2.0+sgn(-5.0)+log(exp)log(1.0)
+	//by internet(online calculator)
+	//+/*+2.2*1.1*4.41.05.56.6+^+*cos0.1238912982.0sin0.02.0+sgn-5.0+logexplog1.0
+	//2.21.14.41.05.56.6cos(0.123891298)2.0sin(0.0)2.0sgn(-5.0)log(exp)log(1.0)
 }
