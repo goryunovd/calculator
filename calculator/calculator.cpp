@@ -113,41 +113,44 @@ int priority(string c)
 	else if (c == "+" || c == "-")	{		return 1;	}
 	else							{		return 0;	}
 }
-void prefix_notation_isnt_my_oreintation(Stack<string> *prefix, Stack<string> str)
+void prefix_notation_isnt_my_oreintation(Stack<string> *prefix, Stack<string> *str)
  {
 	/*
 	stack string				| stack operators				|stack prefix
 	*/
 	Stack<string> operators;
 	string tmp;
-	while (!str.empty())
+	while (!str->empty())
 	{
-		tmp = str.top();
+		tmp = str->top();
 		//((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(0.123891298)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)
-		if (tmp == "(") { operators.push(tmp); str.pop(); }
+		if (tmp == "(") { operators.push(tmp); str->pop(); }
 		else
-			if (tmp == ")") { while (tmp != "(") { tmp = operators.top(); if (tmp != "(") { prefix->push(tmp); }operators.pop(); } str.pop(); }
+			if (tmp == ")") { while (tmp != "(") { tmp = operators.top(); if (tmp != "(") { prefix->push(tmp); }operators.pop(); } str->pop(); }
 //		if (tmp == "*" || tmp == "+" || tmp == "-" || tmp == "/" || tmp == "^")
 		else
-				if (tmp == "*") {
-					while (priority(tmp) <= priority(operators.top())) {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop(); }operators.push(str.top()); str.pop();
+			if (tmp == "*") {
+					while (priority(tmp) <= priority(operators.top())) {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop(); }operators.push(str->top()); str->pop();
 		}
 		else
-					if (tmp == "+") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str.top()); str.pop();
+			if (tmp == "+") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str->top()); str->pop();
 		}
 		else
-						if (tmp == "-") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); }operators.push(str.top()); str.pop();
+			if (tmp == "-") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); }operators.push(str->top()); str->pop();
 		}
 		else
-							if (tmp == "/") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str.top()); str.pop();
+			if (tmp == "/") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str->top()); str->pop();
+		}
+			else
+			if (tmp == "^") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str->top()); str->pop();
 		}
 		else
-								if (tmp == "^") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str.top()); str.pop();
-		}
-		else
-									if (tmp != "*" && tmp != "+" && tmp != "-" && tmp != "/" && tmp != "^" && tmp != "(" && tmp != ")")
-		{prefix->push(tmp); str.pop();}
-	}};
+			if (tmp != "*" && tmp != "+" && tmp != "-" && tmp != "/" && tmp != "^" && tmp != "(" && tmp != ")")
+		{prefix->push(tmp); str->pop();}
+	}
+	while (!operators.empty()) {operators.pop(); }
+	while (!str->empty()) { str->pop(); }
+};
 /*
 1) Create empty stack for saving operators
 2)check calculation from right to left
@@ -158,14 +161,32 @@ and add them to the output list if only operators proirity on top of stack >= pr
 then add token in stack 
 otherway add token in stack firstly 
 3) if after searching all elements some operators left in stack-> add to output 
+*/
 
+int calculation(Stack<string> rev_pref, double result)
+{
+	
+	Stack<string> calc;
+	string tmp1, tmp2;
+
+
+
+	return result;
+};
+/*
+create "empty stack"
+scan from right to left(reverse stack) 
+if tmp=stack.top()==operator(numbers or log or some else)	=> put in "epmty stack"
+if tmp=stack.top()==operand(+ - * / sqrt ^)					=>take two string from "empty stack"
 */
 int main()
 {
 	Stack<string> prefix_stack;
 	Stack<string> from_str;
-	string str = "((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(0.123891298)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)";
+	Stack<string> reverse_prefix;
+	string str = "((2.2+1.1*4.4*1.0)*5.5)/6.6+(-5)+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)+";
 	bool check_for_bracekts = 0;
+	double result;
 	cout << "our txt is :" << str << endl;
 
 	check_for_bracekts = check_for_correct_input(str, check_for_bracekts);
@@ -174,15 +195,14 @@ int main()
 	check_for_bracekts = stack_brackets_check(str, check_for_bracekts);
 	cout << "check=" << check_for_bracekts<<endl;
 
-
+	//																	i have emergency stop by vs over the from_str
 	//prefix_isnt_my_oreintation()
 	transform_inf_to_stack(&from_str, str);
-	//while (!from_str.empty()) { cout << from_str.top(); from_str.pop(); }
-	prefix_notation_isnt_my_oreintation(&prefix_stack, from_str);
+	//while (!from_str.empty()) {  from_str.pop(); }
+	prefix_notation_isnt_my_oreintation(&prefix_stack, &from_str);
 	cout << "\nprefix form:\n";
-	while (!prefix_stack.empty()) { cout << prefix_stack.top(); prefix_stack.pop(); }
+	while (!prefix_stack.empty()) { cout << prefix_stack.top(); reverse_prefix.push(prefix_stack.top()); prefix_stack.pop(); }
 	//+/*+2.2*1.1*4.41.05.56.6+^+*cos(0.123891298)2.0sin(0.0)2.0+sgn(-5.0)+log(exp)log(1.0)
 	//by internet(online calculator)
 	//+/*+2.2*1.1*4.41.05.56.6+^+*cos0.1238912982.0sin0.02.0+sgn-5.0+logexplog1.0
-	//2.21.14.41.05.56.6cos(0.123891298)2.0sin(0.0)2.0sgn(-5.0)log(exp)log(1.0)
 }
