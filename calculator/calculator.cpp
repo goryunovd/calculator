@@ -168,12 +168,18 @@ int calculation(Stack<string> rev_pref, double result)
 	
 	Stack<string> calc;
 	string tmp1, tmp_calc1, tmp_calc2;
+	char operation;
 	while (!rev_pref.empty())
 	{
 		tmp1 = rev_pref.top();
 		if (tmp1 == "*" && tmp1 == "+" && tmp1 == "-" && tmp1 == "/" && tmp1 == "^")
 		{
-
+			switch (tmp1[1])
+			{
+			case'+':{ break; }	
+			default:
+				break;
+			}
 		}
 	}
 	return result;
