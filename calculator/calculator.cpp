@@ -4,7 +4,7 @@
 #include <iostream>
 #include"stack.h"
 #define pi 3.14159265 
-#define exp 2.718281
+#define e 2.718281
 using namespace std;
 
 int check_for_correct_input(string str, bool check_for_bracekts)
@@ -97,10 +97,10 @@ void transform_inf_to_stack(Stack<string> *stck, string str)
 	else
 	if (str[i] == '^') { stck->push("^"); }
 	else
-	//pi and exp
-	if (str[i] == 'p'&&str[i] == 'i') { stck->push("pi"); i++; 		}
+	//pi and e
+	if (str[i] == 'p'&&str[i+1] == 'i') { stck->push("pi"); i++; 		}
 	else
-	if (str[i] == 'e'&&str[i] == 'p') { stck->push("exp"); i += 2; 	}
+	if (str[i] == 'e') { stck->push("e"); i += 2; 	}
 
 	}
 
@@ -123,7 +123,7 @@ void prefix_notation_isnt_my_oreintation(Stack<string> *prefix, Stack<string> *s
 	while (!str->empty())
 	{
 		tmp = str->top();
-		//((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(0.123891298)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)
+		//((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(0.123891298)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(e)+log(1.0)
 		if (tmp == "(") { operators.push(tmp); str->pop(); }
 		else
 			if (tmp == ")") { while (tmp != "(") { tmp = operators.top(); if (tmp != "(") { prefix->push(tmp); }operators.pop(); } str->pop(); }
@@ -162,21 +162,22 @@ then add token in stack
 otherway add token in stack firstly 
 3) if after searching all elements some operators left in stack-> add to output 
 */
-int transform_log_and_CO(string str)
+
+string transform_log_and_CO(string str)
 {
 	string tmp_str, tmp2_str;
 	int  left_point, right_point, i, j, pos_ar;//pos_ar- position of artihmetic left/right_point is for borders of double
 	double tmp_d1, tmp_d2;
 	cout << str << endl;
-	while (str.find("exp") != -1)
+	if (str.find("e") != -1)
 	{
-		i = str.find("exp");//find index of 'e'
-		j = str.find("p", i);
-		tmp_str = to_string(exp);
+		i = str.find("e");//find index of 'e'
+		j = i;
+		tmp_str = to_string(e);
 		str.replace(i, j - i + 1, tmp_str);
 		cout << str << endl;
 	}
-	while (str.find("pi") != -1)
+	if(str.find("pi") != -1)
 	{
 		i = str.find("pi");//find index of 'p'
 		j = str.find("i", i);
@@ -184,7 +185,7 @@ int transform_log_and_CO(string str)
 		str.replace(i, j - i + 1, tmp_str);
 		cout << str << endl;
 	}
-	while (str.find("cos(") != -1)
+	if (str.find("cos(") != -1)
 	{
 		i = str.find("cos(");//find index of 'c'
 		j = str.find(")", i);
@@ -196,7 +197,7 @@ int transform_log_and_CO(string str)
 		str.replace(i, j - i + 1, tmp_str);
 		cout << str << endl;
 	}
-	while (str.find("sin(") != -1)
+	if (str.find("sin(") != -1)
 	{
 		i = str.find("sin(");//find index of 's'
 		j = str.find(")", i);
@@ -208,7 +209,7 @@ int transform_log_and_CO(string str)
 		str.replace(i, j - i + 1, tmp_str);
 		cout << str << endl;
 	}
-	while (str.find("sgn(") != -1)
+	if(str.find("sgn(") != -1)
 	{
 		i = str.find("sgn(");//find index of 's'
 		j = str.find(")", i);
@@ -222,11 +223,23 @@ int transform_log_and_CO(string str)
 		str.replace(i, j - i + 1, tmp_str);
 		cout << str << endl;
 	}
-	while (str.find("log(") != -1)
+	if (str.find("log(") != -1)
 	{
-		i = str.find("log(");//find index of 's'
+		i = str.find("log(");//find index of 'l'
 		j = str.find(")", i);
 		tmp_str.assign(str, i + 4, j - (i + 4));
+		tmp_d1 = std::stod(tmp_str);
+		//calculation sin of thi tmp_d1 and then add it 
+		tmp_d2 = log2(tmp_d1);
+		tmp_str = to_string(tmp_d2);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+	if (str.find("ln(") != -1)
+	{
+		i = str.find("ln(");//find index of 'l'
+		j = str.find(")", i);
+		tmp_str.assign(str, i + 3, j - (i + 3));
 		tmp_d1 = std::stod(tmp_str);
 		//calculation sin of thi tmp_d1 and then add it 
 		tmp_d2 = log(tmp_d1);
@@ -234,47 +247,95 @@ int transform_log_and_CO(string str)
 		str.replace(i, j - i + 1, tmp_str);
 		cout << str << endl;
 	}
+	if (str.find("ctg(") != -1)
+	{
+		i = str.find("ctg(");//find index of 'l'
+		j = str.find(")", i);
+		tmp_str.assign(str, i + 4, j - (i + 4));
+		tmp_d1 = std::stod(tmp_str);
+		//calculation sin of thi tmp_d1 and then add it 
+		tmp_d2 = 1/(tan(tmp_d1));
+		tmp_str = to_string(tmp_d2);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+	if (str.find("tg(") != -1)
+	{
+		i = str.find("tg(");//find index of 'l'
+		j = str.find(")", i);
+		tmp_str.assign(str, i + 3, j - (i + 3));
+		tmp_d1 = std::stod(tmp_str);
+		//calculation sin of thi tmp_d1 and then add it 
+		tmp_d2 = tan(tmp_d1);
+		tmp_str = to_string(tmp_d2);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+	if (str.find("sqrt(") != -1)
+	{
+		i = str.find("tg(");//find index of 'l'
+		j = str.find(")", i);
+		tmp_str.assign(str, i + 5, j - (i + 5));
+		tmp_d1 = std::stod(tmp_str);
+		//calculation sin of thi tmp_d1 and then add it 
+		tmp_d2 = sqrt(tmp_d1);
+		tmp_str = to_string(tmp_d2);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+	//tmp_str= str;
+	return str;
 }
-int calculation(Stack<string> rev_pref, double result)
+double calculation(Stack<string>* rev_pref)
 {
-	
 	Stack<string> calc;
 	string tmp1, tmp_calc1, tmp_calc2;
 	char operation;
 	double tmp_d1, tmp_d2;
-	while (!rev_pref.empty())
+	while (!rev_pref->empty())
 	{
-		tmp1 = rev_pref.top();
-		if (tmp1 == "*" && tmp1 == "+" && tmp1 == "-" && tmp1 == "/" && tmp1 == "^")
+		tmp1 = rev_pref->top();
+		if (tmp1 == "*" || tmp1 == "+" || tmp1 == "-" || tmp1 == "/" || tmp1 == "^")
 		{
 	/*	create "empty stack"
 		scan from right to left(reverse stack)
 		if tmp=stack.top()==operator(numbers or log or some else)=> put in "epmty stack"
 		if tmp=stack.top()==operand(+ - * / sqrt ^)				 =>take two string from "empty stack" make arithmetics and add back to stack*/
-			switch (tmp1[1])
-			{
-			case'+':
-			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
-			tmp_d1 = tmp_d1 + tmp_d2; calc.push(to_string(tmp_d2)); break; }
-			case'*':
-			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
-			tmp_d1 = tmp_d1 * tmp_d2; calc.push(to_string(tmp_d2)); break; }
-			case'-':
-			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
-			tmp_d1 = tmp_d1 - tmp_d2; calc.push(to_string(tmp_d2)); break; }
-			case'/':
-			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
-			tmp_d1 = tmp_d1 / tmp_d2; calc.push(to_string(tmp_d2)); break; }
-			case'^':
-			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
-			tmp_d1 = pow(tmp_d1, tmp_d2); calc.push(to_string(tmp_d2)); break; }
-			default:break;
-			}
+	
+			if(tmp1=="+")
+			{tmp_calc1 = calc.top();calc.pop();
+			tmp_calc2 = calc.top(); calc.pop();
+			tmp_d1 = std::stod(tmp_calc1); 
+			tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = tmp_d1 + tmp_d2; 
+			calc.push(to_string(tmp_d1)); }
+			else 
+			if(tmp1=="*")
+			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); calc.pop(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = tmp_d1 * tmp_d2; calc.push(to_string(tmp_d1)); }
+			else
+			if(tmp1=="-")
+			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); calc.pop(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = tmp_d1 - tmp_d2; calc.push(to_string(tmp_d1)); }
+			else 
+			if(tmp1=="/")
+			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); calc.pop(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = tmp_d1 / tmp_d2; calc.push(to_string(tmp_d1)); }
+			else 
+			if(tmp1=="^")
+			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); calc.pop(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = pow(tmp_d1, tmp_d2); calc.push(to_string(tmp_d1));  }			
 		}
-		//if its double/exp/pi/log
-
+		//if its double/e/pi/log
+		if (tmp1.rfind("c") != -1 || tmp1.rfind("s") != -1 || tmp1.rfind("e") != -1 || tmp1.rfind("p") != -1 || tmp1.rfind("l") != -1 || tmp1.rfind("t") != -1)
+			//				cos				sin,sgn,sqrt					e						pi					log,ln				tg,ctg
+		{
+			tmp1 = transform_log_and_CO(tmp1); calc.push(tmp1);
+		}
+		else if (tmp1.rfind(".") != -1) { calc.push(tmp1); }
+		rev_pref->pop();
 	}
-	result = std::stod(calc.top());
+	double	result = std::stod(calc.top());
 	return result;
 };
 /*
@@ -288,7 +349,7 @@ int main()
 	Stack<string> prefix_stack;
 	Stack<string> from_str;
 	Stack<string> reverse_prefix;
-	string str = "((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)";
+	string str = "((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+sgn(-5.0)+ln(e)+ln(1.0)";//9.80558...
 	bool check_for_bracekts = 0;
 	double result;
 	cout << "our txt is :" << str << endl;
@@ -300,26 +361,27 @@ int main()
 	cout << "check=" << check_for_bracekts<<endl;
 
 	//																	i have emergency stop by vs over the from_str
-	//prefix_isnt_my_oreintation()
+	
 	transform_inf_to_stack(&from_str, str);
 	//while (!from_str.empty()) {  from_str.pop(); }
 	prefix_notation_isnt_my_oreintation(&prefix_stack, &from_str);
 	cout << "\nprefix form:\n";
 	while (!prefix_stack.empty()) { cout << prefix_stack.top(); reverse_prefix.push(prefix_stack.top()); prefix_stack.pop(); }
 	cout << endl;
-	while (!reverse_prefix.empty()) { cout << reverse_prefix.top(); reverse_prefix.pop(); }//+/*+2.2*1.1*4.41.05.56.6+^+*cos(0.123891298)2.0sin(0.0)2.0+sgn(-5.0)+log(exp)log(1.0)
+	result = calculation(&reverse_prefix);//9.80558...
+	cout << "result=" << result;
+	//while (!reverse_prefix.empty()) { cout << reverse_prefix.top(); reverse_prefix.pop(); }//+/*+2.2*1.1*4.41.05.56.6+^+*cos(0.123891298)2.0sin(0.0)2.0+sgn(-5.0)+log(e)log(1.0)
 	//by internet(online calculator)
-	//+/*+2.2*1.1*4.41.05.56.6+^+*cos0.1238912982.0sin0.02.0+sgn-5.0+logexplog1.0
+	//+/*+2.2*1.1*4.41.05.56.6+^+*cos0.1238912982.0sin0.02.0+sgn-5.0+logelog1.0
 }
 /*
 input
-((2.2+1.1*4.4*1.0)*5.5)/6.6+777+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)
+((2.2+1.1*4.4*1.0)*5.5)/6.6+777+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(e)+log(1.0)
 output
- +/*+2.2*1.1*4.41.05.56.6+777+^+*cos(0.123891)2.0sin(0.0)2.0+sgn(-5.0)+log(exp)log(1.0)
- 
+ +/*+2.2*1.1*4.41.05.56.6+777+^+*cos(0.123891)2.0sin(0.0)2.0+sgn(-5.0)+log(e)log(1.0)
  
  input
-((2.2+1.1*4.4*1.0)*5.5)/6.6+(-777)+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(exp)+log(1.0)
+((2.2+1.1*4.4*1.0)*5.5)/6.6+(-777)+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(e)+log(1.0)
 output
- +/*+2.2*1.1*4.41.05.56.6+-777+^+*cos(0.123891)2.0sin(0.0)2.0+sgn(-5.0)+log(exp)log(1.0)
+ +/*+2.2*1.1*4.41.05.56.6+-777+^+*cos(0.123891)2.0sin(0.0)2.0+sgn(-5.0)+log(e)log(1.0)
  */
