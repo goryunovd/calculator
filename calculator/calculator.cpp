@@ -162,26 +162,119 @@ then add token in stack
 otherway add token in stack firstly 
 3) if after searching all elements some operators left in stack-> add to output 
 */
-
+int transform_log_and_CO(string str)
+{
+	string tmp_str, tmp2_str;
+	int  left_point, right_point, i, j, pos_ar;//pos_ar- position of artihmetic left/right_point is for borders of double
+	double tmp_d1, tmp_d2;
+	cout << str << endl;
+	while (str.find("exp") != -1)
+	{
+		i = str.find("exp");//find index of 'e'
+		j = str.find("p", i);
+		tmp_str = to_string(exp);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+	while (str.find("pi") != -1)
+	{
+		i = str.find("pi");//find index of 'p'
+		j = str.find("i", i);
+		tmp_str = to_string(pi);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+	while (str.find("cos(") != -1)
+	{
+		i = str.find("cos(");//find index of 'c'
+		j = str.find(")", i);
+		tmp_str.assign(str, i + 4, j - (i + 4));
+		tmp_d1 = std::stod(tmp_str);
+		//calculation cos of thi tmp_d1 and then add it 
+		tmp_d2 = cos(tmp_d1);
+		tmp_str = to_string(tmp_d2);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+	while (str.find("sin(") != -1)
+	{
+		i = str.find("sin(");//find index of 's'
+		j = str.find(")", i);
+		tmp_str.assign(str, i + 4, j - (i + 4));
+		tmp_d1 = std::stod(tmp_str);
+		//calculation sin of thi tmp_d1 and then add it 
+		tmp_d2 = sin(tmp_d1);
+		tmp_str = to_string(tmp_d2);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+	while (str.find("sgn(") != -1)
+	{
+		i = str.find("sgn(");//find index of 's'
+		j = str.find(")", i);
+		tmp_str.assign(str, i + 4, j - (i + 4));
+		tmp_d1 = std::stod(tmp_str);
+		//calculation sin of thi tmp_d1 and then add it 
+		if (tmp_d1 > 0) tmp_d2 = 1;
+		if (tmp_d1 < 0) tmp_d2 = -1;
+		if (tmp_d1 == 0) tmp_d2 = 0;
+		tmp_str = to_string(tmp_d2);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+	while (str.find("log(") != -1)
+	{
+		i = str.find("log(");//find index of 's'
+		j = str.find(")", i);
+		tmp_str.assign(str, i + 4, j - (i + 4));
+		tmp_d1 = std::stod(tmp_str);
+		//calculation sin of thi tmp_d1 and then add it 
+		tmp_d2 = log(tmp_d1);
+		tmp_str = to_string(tmp_d2);
+		str.replace(i, j - i + 1, tmp_str);
+		cout << str << endl;
+	}
+}
 int calculation(Stack<string> rev_pref, double result)
 {
 	
 	Stack<string> calc;
 	string tmp1, tmp_calc1, tmp_calc2;
 	char operation;
+	double tmp_d1, tmp_d2;
 	while (!rev_pref.empty())
 	{
 		tmp1 = rev_pref.top();
 		if (tmp1 == "*" && tmp1 == "+" && tmp1 == "-" && tmp1 == "/" && tmp1 == "^")
 		{
+	/*	create "empty stack"
+		scan from right to left(reverse stack)
+		if tmp=stack.top()==operator(numbers or log or some else)=> put in "epmty stack"
+		if tmp=stack.top()==operand(+ - * / sqrt ^)				 =>take two string from "empty stack" make arithmetics and add back to stack*/
 			switch (tmp1[1])
 			{
-			case'+':{ break; }	
-			default:
-				break;
+			case'+':
+			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = tmp_d1 + tmp_d2; calc.push(to_string(tmp_d2)); break; }
+			case'*':
+			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = tmp_d1 * tmp_d2; calc.push(to_string(tmp_d2)); break; }
+			case'-':
+			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = tmp_d1 - tmp_d2; calc.push(to_string(tmp_d2)); break; }
+			case'/':
+			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = tmp_d1 / tmp_d2; calc.push(to_string(tmp_d2)); break; }
+			case'^':
+			{tmp_calc1 = calc.top(); calc.pop(); tmp_calc2 = calc.top(); tmp_d1 = std::stod(tmp_calc1); tmp_d2 = std::stod(tmp_calc2);
+			tmp_d1 = pow(tmp_d1, tmp_d2); calc.push(to_string(tmp_d2)); break; }
+			default:break;
 			}
 		}
+		//if its double/exp/pi/log
+
 	}
+	result = std::stod(calc.top());
 	return result;
 };
 /*
