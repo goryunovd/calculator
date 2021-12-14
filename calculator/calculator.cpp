@@ -31,7 +31,7 @@ void check_for_correct_input(string str)
 	if (posL != posR) { throw invalid_argument("wrong string"); }
 	
 };
-void check_for_psycho(string str)
+void check_for_wrong_commands(string str)
 {
 	bool check = 1;
 	int pos;
@@ -102,7 +102,7 @@ void transform_inf_to_stack(Stack<string> *stck, string str)
 	{pos = str.find(")", i); tmp_str.assign(str, i, pos -i +1); stck->push(tmp_str); tmp_str = "\0";	i = pos;	}//ln
 	else
 																													 //double
-	if (str[i] >= 48 && str[i] <= 57) 
+	if (str[i] >= 48 && str[i] <= 57) //check from table ASCII if string's symbol is between numbers
 	{
 		j = i; while (str[i] == 46 || (str[i] >= 48 && str[i] <= 57)){i++;} 
 		tmp_str.assign(str, j, i - j); stck->push(tmp_str); tmp_str = "\0"; i--;
@@ -135,10 +135,12 @@ int priority(string c)
 	else if (c == "+" || c == "-")	{		return 1;	}
 	else							{		return 0;	}
 }
-void prefix_notation_isnt_my_oreintation(Stack<string> *prefix, Stack<string> *str)
+void prefix_notation_isnt_my_oreintation(Stack<string> *prefix, Stack<string> *str)//turn in prefix
  {
 	/*
 	stack string				| stack operators				|stack prefix
+	firstly stack					( + - * / ^						double cos sin tg and e.t.c.
+	
 	*/
 	Stack<string> operators;
 	string tmp;
@@ -150,7 +152,7 @@ void prefix_notation_isnt_my_oreintation(Stack<string> *prefix, Stack<string> *s
 			if (tmp == ")") { while (tmp != "(") { tmp = operators.top(); if (tmp != "(") { prefix->push(tmp); }operators.pop(); } str->pop(); }
 		else
 			if (tmp == "*") {
-					while (priority(tmp) <= priority(operators.top())) {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop(); }operators.push(str->top()); str->pop();
+					while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); }operators.push(str->top()); str->pop();
 		}
 		else
 			if (tmp == "+") { while (priority(tmp) <= priority(operators.top())) {prefix->push(operators.top()); operators.pop(); } operators.push(str->top()); str->pop();
@@ -183,11 +185,12 @@ otherway add token in stack firstly
 3) if after searching all elements some operators left in stack-> add to output 
 */
 
-string transform_log_and_CO(string str)
+string transform_log_and_CO(string str)//count log tg sin and e.t.c.as it is simple function of 1 element
 {
 	string tmp_str, tmp2_str;
 	int  left_point, right_point, i, j, pos_ar;//pos_ar- position of artihmetic left/right_point is for borders of double
 	double tmp_d1, tmp_d2;
+	//firstly find e or pi in case it can be in ln or sin or e.t.c.
 	if (str.find("e") != -1)
 	{
 		i = str.find("e");//find index of 'e'
@@ -293,7 +296,7 @@ string transform_log_and_CO(string str)
 	return str;
 }
 double calculation(Stack<string>* rev_pref)
-{
+{//the final count of our prefix
 	Stack<string> calc;
 	string tmp1, tmp_calc1, tmp_calc2;
 	char operation;
@@ -344,22 +347,16 @@ double calculation(Stack<string>* rev_pref)
 	double	result = std::stod(calc.top());
 	return result;
 };
-/*
-create "empty stack"
-scan from right to left(reverse stack) 
-if tmp=stack.top()==operator(numbers or log or some else)	=> put in "epmty stack"
-if tmp=stack.top()==operand(+ - * / sqrt ^)					=>take two string from "empty stack"
-*/
 int main()
 {
 	Stack<string> prefix_stack;
 	Stack<string> from_str;
 	Stack<string> reverse_prefix;
 	string str = "((2.2+1.0*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+sgn(-5.0)+ln(e)+ln(1.0)";
-	//string str ="(cos(pi)+sin(pi))^2.0";
+	//string str ="(cos(pi)+sin(pi))^2.0"; another variant 
 	double result;
 	cout << "our txt is :\n" << str << endl;
-	check_for_psycho(str);
+	check_for_wrong_commands(str);
 	check_for_correct_input(str);
 	transform_inf_to_stack(&from_str, str);
 	prefix_notation_isnt_my_oreintation(&prefix_stack, &from_str);
