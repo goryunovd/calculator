@@ -7,9 +7,9 @@
 #define e 2.718281
 using namespace std;
 
-int check_for_correct_input(string str, bool check_for_bracekts)
+void check_for_correct_input(string str)
 {
-	check_for_bracekts = 1;
+	bool check_for_bracekts = 1;
 	int posL, posR;
 	string str_check_for_brackets = str;
 	string Lbracket = "(";
@@ -28,15 +28,15 @@ int check_for_correct_input(string str, bool check_for_bracekts)
 			check_for_bracekts = 0;
 	}
 
-	if (posL == posR) { check_for_bracekts = 1; }
-	return check_for_bracekts;
+	if (posL != posR) { throw invalid_argument("wrong string"); }
+	
 };
 void check_for_psycho(string str)
 {
 	bool check = 1;
 	int pos;
 	pos = str.find(".");
-	if (pos != -1 && str[pos - 1] >= 57 && str[pos - 1] <= 48){	throw invalid_argument("wrong number");}
+	if (pos != -1 &&( str[pos - 1] >= 57|| str[pos - 1] <= 48)) {	throw invalid_argument("wrong number");}
 	
 	pos = str.find("*");
 	if (pos != -1 && (str[pos - 1] == '(' || str[pos + 1]==')' )) { throw invalid_argument("wrong arithmetics"); }
@@ -48,12 +48,12 @@ void check_for_psycho(string str)
 	if (pos != -1 &&  str[pos + 1] == ')') { throw invalid_argument("wrong arithmetics"); }
 
 	pos = str.find("/");
-	if (pos != -1 && str[pos + 1] == ')') { throw invalid_argument("wrong arithmetics"); }
+	if (pos != -1 && ((str[pos + 1] == ')')|| str[pos -1] == '(')) { throw invalid_argument("wrong arithmetics"); }
 
 	pos = str.find("^");
 	if (pos != -1 && str[pos - 1] == '(' ) { throw invalid_argument("wrong arithmetics"); }
 };
-int stack_brackets_check(string str, bool check)
+/*void stack_brackets_check(string str)
 {
 	Stack<char> stck;
 	for (int i = 0; i < str.length(); i++) 
@@ -61,9 +61,9 @@ int stack_brackets_check(string str, bool check)
 		if (str[i] == '(') { stck.push(str[i]); } 
 		if (str[i] == ')') { stck.pop(); }
 	}
-	if (stck.empty() == 0) { check = 1; }
-	return check;
-};
+	if (stck.empty() == 0) { throw invalid_argument("wrong string"); }
+
+};*/
 void transform_inf_to_stack(Stack<string> *stck, string str)
 {
 	stck->push(")");
@@ -145,11 +145,9 @@ void prefix_notation_isnt_my_oreintation(Stack<string> *prefix, Stack<string> *s
 	while (!str->empty())
 	{
 		tmp = str->top();
-		//((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(0.123891298)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(e)+log(1.0)
 		if (tmp == "(") { operators.push(tmp); str->pop(); }
 		else
 			if (tmp == ")") { while (tmp != "(") { tmp = operators.top(); if (tmp != "(") { prefix->push(tmp); }operators.pop(); } str->pop(); }
-//		if (tmp == "*" || tmp == "+" || tmp == "-" || tmp == "/" || tmp == "^")
 		else
 			if (tmp == "*") {
 					while (priority(tmp) <= priority(operators.top())) {/*} if (operators.top == "*" || operators.top == "/" || operators.top == "^") {  */prefix->push(operators.top()); operators.pop(); }operators.push(str->top()); str->pop();
@@ -190,14 +188,12 @@ string transform_log_and_CO(string str)
 	string tmp_str, tmp2_str;
 	int  left_point, right_point, i, j, pos_ar;//pos_ar- position of artihmetic left/right_point is for borders of double
 	double tmp_d1, tmp_d2;
-	cout << str << endl;
 	if (str.find("e") != -1)
 	{
 		i = str.find("e");//find index of 'e'
 		j = i;
 		tmp_str = to_string(e);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
 	if(str.find("pi") != -1)
 	{
@@ -205,7 +201,6 @@ string transform_log_and_CO(string str)
 		j = str.find("i", i);
 		tmp_str = to_string(pi);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
 	if (str.find("cos(") != -1)
 	{
@@ -213,11 +208,9 @@ string transform_log_and_CO(string str)
 		j = str.find(")", i);
 		tmp_str.assign(str, i + 4, j - (i + 4));
 		tmp_d1 = std::stod(tmp_str);
-		//calculation cos of thi tmp_d1 and then add it 
 		tmp_d2 = cos(tmp_d1);
 		tmp_str = to_string(tmp_d2);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
 	if (str.find("sin(") != -1)
 	{
@@ -225,11 +218,9 @@ string transform_log_and_CO(string str)
 		j = str.find(")", i);
 		tmp_str.assign(str, i + 4, j - (i + 4));
 		tmp_d1 = std::stod(tmp_str);
-		//calculation sin of thi tmp_d1 and then add it 
 		tmp_d2 = sin(tmp_d1);
 		tmp_str = to_string(tmp_d2);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
 	if(str.find("sgn(") != -1)
 	{
@@ -237,13 +228,11 @@ string transform_log_and_CO(string str)
 		j = str.find(")", i);
 		tmp_str.assign(str, i + 4, j - (i + 4));
 		tmp_d1 = std::stod(tmp_str);
-		//calculation sin of thi tmp_d1 and then add it 
 		if (tmp_d1 > 0) tmp_d2 = 1;
 		if (tmp_d1 < 0) tmp_d2 = -1;
 		if (tmp_d1 == 0) tmp_d2 = 0;
 		tmp_str = to_string(tmp_d2);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
 	if (str.find("log(") != -1)
 	{
@@ -251,11 +240,12 @@ string transform_log_and_CO(string str)
 		j = str.find(")", i);
 		tmp_str.assign(str, i + 4, j - (i + 4));
 		tmp_d1 = std::stod(tmp_str);
-		//calculation sin of thi tmp_d1 and then add it 
+		if (tmp_d1 <= 0) {
+			throw invalid_argument("wrong number under logartihm");
+		}
 		tmp_d2 = log2(tmp_d1);
 		tmp_str = to_string(tmp_d2);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
 	if (str.find("ln(") != -1)
 	{
@@ -263,49 +253,43 @@ string transform_log_and_CO(string str)
 		j = str.find(")", i);
 		tmp_str.assign(str, i + 3, j - (i + 3));
 		tmp_d1 = std::stod(tmp_str);
-		//calculation sin of thi tmp_d1 and then add it 
+		if(tmp_d1<=0){throw invalid_argument("wrong number under logartihm");
+		}
 		tmp_d2 = log(tmp_d1);
 		tmp_str = to_string(tmp_d2);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
 	if (str.find("ctg(") != -1)
 	{
-		i = str.find("ctg(");//find index of 'l'
+		i = str.find("ctg(");//find index of 'c'
 		j = str.find(")", i);
 		tmp_str.assign(str, i + 4, j - (i + 4));
 		tmp_d1 = std::stod(tmp_str);
-		//calculation sin of thi tmp_d1 and then add it 
 		tmp_d2 = 1/(tan(tmp_d1));
 		tmp_str = to_string(tmp_d2);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
 	if (str.find("tg(") != -1)
 	{
-		i = str.find("tg(");//find index of 'l'
+		i = str.find("tg(");//find index of 't'
 		j = str.find(")", i);
 		tmp_str.assign(str, i + 3, j - (i + 3));
 		tmp_d1 = std::stod(tmp_str);
-		//calculation sin of thi tmp_d1 and then add it 
 		tmp_d2 = tan(tmp_d1);
 		tmp_str = to_string(tmp_d2);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
 	if (str.find("sqrt(") != -1)
 	{
-		i = str.find("tg(");//find index of 'l'
+		i = str.find("sqrt(");//find index of 's'
 		j = str.find(")", i);
 		tmp_str.assign(str, i + 5, j - (i + 5));
 		tmp_d1 = std::stod(tmp_str);
-		//calculation sin of thi tmp_d1 and then add it 
+		if (tmp_d1 < 0) {	throw invalid_argument("wrong number under logartihm");}
 		tmp_d2 = sqrt(tmp_d1);
 		tmp_str = to_string(tmp_d2);
 		str.replace(i, j - i + 1, tmp_str);
-		cout << str << endl;
 	}
-	//tmp_str= str;
 	return str;
 }
 double calculation(Stack<string>* rev_pref)
@@ -371,40 +355,19 @@ int main()
 	Stack<string> prefix_stack;
 	Stack<string> from_str;
 	Stack<string> reverse_prefix;
-	string str = "((2.2+1.1*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+sgn(-5.0)+ln(e)+ln(1.0)";//9.80558...
-	bool check_for_bracekts = 0;
+	string str = "((2.2+1.0*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+sgn(-5.0)+ln(e)+ln(1.0)";
+	//string str ="(cos(pi)+sin(pi))^2.0";
 	double result;
-	cout << "our txt is :" << str << endl;
-
+	cout << "our txt is :\n" << str << endl;
 	check_for_psycho(str);
-	check_for_bracekts = check_for_correct_input(str, check_for_bracekts);
-	cout << "check=" << check_for_bracekts<<endl;
-	
-	check_for_bracekts = stack_brackets_check(str, check_for_bracekts);
-	cout << "check=" << check_for_bracekts<<endl;
-
-	//																	i have emergency stop by vs over the from_str
-	
+	check_for_correct_input(str);
 	transform_inf_to_stack(&from_str, str);
-	//while (!from_str.empty()) {  from_str.pop(); }
 	prefix_notation_isnt_my_oreintation(&prefix_stack, &from_str);
 	cout << "\nprefix form:\n";
 	while (!prefix_stack.empty()) { cout << prefix_stack.top(); reverse_prefix.push(prefix_stack.top()); prefix_stack.pop(); }
 	cout << endl;
-	result = calculation(&reverse_prefix);//9.80558...
+	result = calculation(&reverse_prefix);//9.5
 	cout << "result=" << result;
-	//while (!reverse_prefix.empty()) { cout << reverse_prefix.top(); reverse_prefix.pop(); }//+/*+2.2*1.1*4.41.05.56.6+^+*cos(0.123891298)2.0sin(0.0)2.0+sgn(-5.0)+log(e)log(1.0)
 	//by internet(online calculator)
 	//+/*+2.2*1.1*4.41.05.56.6+^+*cos0.1238912982.0sin0.02.0+sgn-5.0+logelog1.0
 }
-/*
-input
-((2.2+1.1*4.4*1.0)*5.5)/6.6+777+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(e)+log(1.0)
-output
- +/*+2.2*1.1*4.41.05.56.6+777+^+*cos(0.123891)2.0sin(0.0)2.0+sgn(-5.0)+log(e)log(1.0)
- 
- input
-((2.2+1.1*4.4*1.0)*5.5)/6.6+(-777)+(cos(0.123891)*2.0+sin(0.0))^2.0+sgn(-5.0)+log(e)+log(1.0)
-output
- +/*+2.2*1.1*4.41.05.56.6+-777+^+*cos(0.123891)2.0sin(0.0)2.0+sgn(-5.0)+log(e)log(1.0)
- */
