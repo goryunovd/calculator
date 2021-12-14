@@ -149,6 +149,26 @@ namespace UnitTest1
 			}
 		}
 
-		TEST_METHOD(Test_)
+		TEST_METHOD(Test_for_true_stack)
+		{
+			Stack<string> prefix_stack;
+			Stack<string> from_str;
+			string tmp1,tmp2;
+			bool check = 0;
+			string str1 = "log(6.66)+ln(993.0)+sqrt(25.25)";//+ log(6.66) + ln(993.0) sqrt(25.25)
+			transform_inf_to_stack(&from_str, str1);
+			prefix_notation_isnt_my_oreintation(&prefix_stack, &from_str);
+								tmp1 = prefix_stack.top();tmp2 = "+";
+			Assert::AreEqual(tmp2,tmp1);
+			prefix_stack.pop();	tmp1 = prefix_stack.top();  tmp2 = "log(6.66)";
+			Assert::AreEqual(tmp2, tmp1);
+			prefix_stack.pop();	tmp1 = prefix_stack.top(); tmp2 = "+";
+			Assert::AreEqual(tmp2, tmp1);
+			prefix_stack.pop();	tmp1 = prefix_stack.top();tmp2 = "ln(993.0)";
+			Assert::AreEqual(tmp2, tmp1);			
+			prefix_stack.pop();	tmp1 = prefix_stack.top(); tmp2 = "sqrt(25.25)";
+			Assert::AreEqual(tmp2, tmp1);
+
+		}
 	};
 }
