@@ -31,6 +31,28 @@ int check_for_correct_input(string str, bool check_for_bracekts)
 	if (posL == posR) { check_for_bracekts = 1; }
 	return check_for_bracekts;
 };
+void check_for_psycho(string str)
+{
+	bool check = 1;
+	int pos;
+	pos = str.find(".");
+	if (pos != -1 && str[pos - 1] >= 57 && str[pos - 1] <= 48){	throw invalid_argument("wrong number");}
+	
+	pos = str.find("*");
+	if (pos != -1 && (str[pos - 1] == '(' || str[pos + 1]==')' )) { throw invalid_argument("wrong arithmetics"); }
+	
+	pos = str.find("+");
+	if (pos != -1 && (str[pos - 1] == '(' || str[pos + 1] == ')')) { throw invalid_argument("wrong arithmetics"); }
+
+	pos = str.find("-");
+	if (pos != -1 &&  str[pos + 1] == ')') { throw invalid_argument("wrong arithmetics"); }
+
+	pos = str.find("/");
+	if (pos != -1 && str[pos + 1] == ')') { throw invalid_argument("wrong arithmetics"); }
+
+	pos = str.find("^");
+	if (pos != -1 && str[pos - 1] == '(' ) { throw invalid_argument("wrong arithmetics"); }
+};
 int stack_brackets_check(string str, bool check)
 {
 	Stack<char> stck;
@@ -354,6 +376,7 @@ int main()
 	double result;
 	cout << "our txt is :" << str << endl;
 
+	check_for_psycho(str);
 	check_for_bracekts = check_for_correct_input(str, check_for_bracekts);
 	cout << "check=" << check_for_bracekts<<endl;
 	
