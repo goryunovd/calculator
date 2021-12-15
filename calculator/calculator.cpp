@@ -36,7 +36,7 @@ void check_for_wrong_commands(string str)
 	bool check = 1;
 	int pos;
 	pos = str.find(".");
-	if (pos != -1 &&( str[pos - 1] >= 57|| str[pos - 1] <= 48)) {	throw invalid_argument("wrong number");}
+	if (pos != -1 &&( str[pos - 1] > 57 || str[pos - 1] < 48)) {	throw invalid_argument("wrong number");}
 	
 	pos = str.find("*");
 	if (pos != -1 && (str[pos - 1] == '(' || str[pos + 1]==')' )) { throw invalid_argument("wrong arithmetics"); }
@@ -53,6 +53,21 @@ void check_for_wrong_commands(string str)
 	pos = str.find("^");
 	if (pos != -1 && str[pos - 1] == '(' ) { throw invalid_argument("wrong arithmetics"); }
 };
+
+string check_for_unarity(string str)
+{	//sqrt,sgn,sin,cos,log,ln,tg,ctg	g,n,s,t
+		//string str = "((2.2+1.0*4.4*1.0)*5.5)/6.6+(-cos(6.2832)*2.0+sin(0.0))^2.0+sgn(-5.0)+ln(e)+ln(1.0)";
+	//add (str)
+		//( ((2.2+1.0*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+sgn(-5.0)+ln(e)+ln(1.0) )
+
+	for (int i = 1; i < str.length()-1; i++)
+	{
+		if (str[i-1] == '(' && str[i] == '-' && (str[i +1] != 'g' || str[i + 1] != 'n' || str[i + 1] != 's' || str[i + 1] != 't')) 
+		{ str.replace(i, 1, "0.0-"); }
+	}
+	return str;
+};	
+
 /*void stack_brackets_check(string str)
 {
 	Stack<char> stck;
@@ -352,9 +367,13 @@ int main()
 	Stack<string> prefix_stack;
 	Stack<string> from_str;
 	Stack<string> reverse_prefix;
-	string str = "((2.2+1.0*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+sgn(-5.0)+ln(e)+ln(1.0)";
-	//string str ="(cos(pi)+sin(pi))^2.0"; another variant 
+	string str = "((2.2+1.0*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+ln(e)+ln(1.0)";
+	//string str ="(cos(pi)+sin(pi))^2.0"; //another variant 
+	//string str = "(-1.0)+5.2";
 	double result;
+	cout << "our txt is :\n" << str << endl;
+	str = "(" + str + ")";
+	str=check_for_unarity(str);
 	cout << "our txt is :\n" << str << endl;
 	check_for_wrong_commands(str);
 	check_for_correct_input(str);

@@ -98,31 +98,31 @@ namespace UnitTest1
 			string str6 = "(^sin(pi))";
 			string str7 = "(sin(pi)-)";
 			bool check = 0;
-			try { check_for_psycho(str1); }
+			try { check_for_wrong_commands(str1); }
 			catch (std::invalid_argument) { check = 1; }
 			Assert::IsTrue(check);
 			check = 0;
-			try { check_for_psycho(str2); }
+			try { check_for_wrong_commands(str2); }
 			catch (std::invalid_argument) { check = 1; }
 			Assert::IsTrue(check);
 			check = 0;
-			try { check_for_psycho(str3); }
+			try { check_for_wrong_commands(str3); }
 			catch (std::invalid_argument) { check = 1; }
 			Assert::IsTrue(check);
 			check = 0;
-			try { check_for_psycho(str4); }
+			try { check_for_wrong_commands(str4); }
 			catch (std::invalid_argument) { check = 1; }
 			Assert::IsTrue(check);
 			check = 0;
-			try { check_for_psycho(str5); }
+			try { check_for_wrong_commands(str5); }
 			catch (std::invalid_argument) { check = 1; }
 			Assert::IsTrue(check);
 			check = 0;
-			try { check_for_psycho(str6); }
+			try { check_for_wrong_commands(str6); }
 			catch (std::invalid_argument) { check = 1; }
 			Assert::IsTrue(check);
 			check = 0;
-			try { check_for_psycho(str7); }
+			try { check_for_wrong_commands(str7); }
 			catch (std::invalid_argument) { check = 1; }
 			Assert::IsTrue(check);
 		}
