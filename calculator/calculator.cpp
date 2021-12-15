@@ -60,10 +60,10 @@ string check_for_unarity(string str)
 	//add (str)
 		//( ((2.2+1.0*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+sgn(-5.0)+ln(e)+ln(1.0) )
 
-	for (int i = 1; i < str.length()-1; i++)
+	for (int i =1; i < str.length()-1; i++)
 	{
-		if (str[i-1] == '(' && str[i] == '-' && (str[i +1] != 'g' || str[i + 1] != 'n' || str[i + 1] != 's' || str[i + 1] != 't')) 
-		{ str.replace(i, 1, "0.0-"); }
+		if (str[i] == '(' && str[i+1] == '-' && (str[i-1] != 'g' && str[i- 1] != 'n' && str[i - 1] != 's' && str[i - 1] != 't')) 
+		{ str.replace(i, 1, "(0.0"); }
 	}
 	return str;
 };	
@@ -367,9 +367,9 @@ int main()
 	Stack<string> prefix_stack;
 	Stack<string> from_str;
 	Stack<string> reverse_prefix;
-	string str = "((2.2+1.0*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+ln(e)+ln(1.0)";
+	//string str = "(((-2.2)+1.0*4.4*1.0)*5.5)/6.6+(cos(6.2832)*2.0+sin(0.0))^2.0+sgn(-5.0)+ln(e)+ln(1.0)";
 	//string str ="(cos(pi)+sin(pi))^2.0"; //another variant 
-	//string str = "(-1.0)+5.2";
+	string str = "(-1.0)+5.2";
 	double result;
 	cout << "our txt is :\n" << str << endl;
 	str = "(" + str + ")";
